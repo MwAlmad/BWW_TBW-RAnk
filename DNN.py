@@ -254,9 +254,7 @@ def plot_average_metrics(metrics_dict):
     ax.spines['bottom'].set_linewidth(0.3)
 
     # Remove x-ticks and y-ticks
-    ax.tick_params(axis='x', which='both', bottom=True, top=False)  # keep bottom x-ticks
-    #ax.tick_params(axis='y', which='both', left=False, right=True)  # keep right y-ticks
-    #ax.tick_params(axis='x', which='both', bottom=False, top=False)
+    ax.tick_params(axis='x', which='both', bottom=True, top=False)  # keep bottom x-tick
 
     # Layout adjustment
     plt.tight_layout()
@@ -429,9 +427,6 @@ with open(filename, 'w') as f:
 history = train_model(model, X_train, y_train_encoded, X_val, y_val_encoded)
 
 test_metrics, metrics_dict = evaluate_model(model, X_test, y_test_encoded, target_columns)
-
-#all_fold_metrics = cross_validate_model(X_train, y_train_encoded, target_columns, create_model_fn=build_model, n_splits=5)
-
 
 plot_average_metrics(metrics_dict)
 
