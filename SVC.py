@@ -194,7 +194,7 @@ def train_and_evaluate_classifiers(classifiers, X_train, X_test, y_train, y_test
     return accuracies
 
 def main():
-    # Assuming df is your dataset with input features and labels for classification
+    
     features = ['Support TOTP', 'Support Facial Recognition', 'Multiple Cryptocurrencies', 'Wallet Age',
                 'Non-Custodial',
                 'Custodial', 'Rating', 'Security Level']
@@ -210,8 +210,6 @@ def main():
     # Split the data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    # Create SVC (Support Vector Classification) for each label with 'rbf' kernel
-    #classifiers = [SVC(kernel='rbf', C=1) for _ in labels]
     # Define the parameter grid
     param_grid = {'C': [0.1, 1, 10], 'gamma': ['scale', 'auto', 0.1, 1, 10]}
     classifiers = []
