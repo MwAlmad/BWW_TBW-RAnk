@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+	<div class="container-fluid">
+	<form  method="POST" action = "" enctype="multipart/form-data" class=" text-center ">
+		{{ form.hidden_tag() }}
+		<br><br><br>
+		<h5 class="mb-4">Wallet Account Information</h5>
+
+		<div class="form-group col-md-4 mx-auto">
+			{{form.email.label() }}
+			{{form.email(class='card-body form-control text-center',readonly="readonly") }}
+		</div>
+
+		<div class="form-group col-md-5 mx-auto my-3">
+			{{ form.account_address.label() }}
+			{{form.account_address(class='card-body form-control text-center' ,readonly="readonly")  }}
+		</div>
+
+		<div class="form-group col-md-5 mx-auto my-3">
+			{{ form.publickey.label() }}
+			{{form.publickey(class='card-body form-control text-center' ,readonly="readonly")  }}
+		</div>
+
+
+		<div class="form-group col-md-1 mx-auto my-3">
+			{{ form.balance.label() }}
+			{{form.balance(class='card-body form-control text-center' ,readonly="readonly")  }}
+		</div>
+		<!-- <div class="form-group col-md-7 mx-auto my-3">
+      {{ form.privatekey.label() }}
+      {{ form.privatekey(class='card-body form-control text-center' ,readonly="readonly") }}
+    </div> -->
+		<div class="form-group col-md-5 my-4">
+			<div class="alert alert-danger" role="alert">
+				<h4 class="alert-heading">please save your credentials </h4>
+				<p>Once you have registered your account, you can download your account credentials (private keys) once only.</p>
+				<p>We do not keep your private keys in the database, so please save it in a safe place.</p>
+			</div>
+			<br>
+			{{ form.submit(class="btn1 btn-md btn-block", value="Download Credentials") }}
+		</div>
+	</form>
+</div>
+
+{% endblock content %}

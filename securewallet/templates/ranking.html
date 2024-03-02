@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+
+
+	<br>
+	<br>
+
+	<h1>BW solution Rankings</h1>
+	<!-- Display the form -->
+	<form action="" method="post">
+		{{ form.hidden_tag() }}
+		<fieldset>
+			<legend>Select a Feature:</legend>
+			{% for radio in form.selected_feature %}
+			<label>{{ radio }} {{ radio.label }}</label><br>
+			{% endfor %}
+		</fieldset>
+		{{ form.submit() }}
+	</form>
+
+	{% if rankings %}
+	<h2>Rankings for: {{ form.selected_feature.data }}</h2>
+	<table class="table table-striped text-center pt-5">
+		<thead>
+		<tr>
+			<th>Wallet Name</th>
+			{% if form.selected_feature.data != '0' %}
+			<th>{{ form.selected_feature.choices[int(form.selected_feature.data)][1] }}</th>
+			{% else %}
+			<th>Support TOTP</th>
+			<th>Support Facial Recognition</th>
+			<th>Multiple Cryptocurrencies</th>
+			<th>Wallet Age</th>
+			<th>Non-Custodial</th>
+			<th>Custodial</th>
+			<th>Rating</th>
+			<th>Security Level</th>
+			<th>General Ranking</th>
+			{% endif %}
+		</tr>
+		</thead>
+		<tbody>
+		{% for wallet in rankings %}
+		<tr>
+			<td>{{ wallet.wallet_name }}</td>
+			{% if form.selected_feature.data != '0' %}
+			<td>{{ getattr(wallet, form.selected_feature.choices[int(form.selected_feature.data)][1].lower().replace(' ', '_')) }}</td>
+			{% else %}
+			<td>{{ wallet.support_totp }}</td>
+			<td>{{ wallet.support_facial_recognition }}</td>
+			<td>{{ wallet.multiple_cryptocurrencies }}</td>
+			<td>{{ wallet.wallet_age }}</td>
+			<td>{{ wallet.non_custodial }}</td>
+			<td>{{ wallet.custodial }}</td>
+			<td>{{ wallet.rating }}</td>
+			<td>{{ wallet.security_level }}</td>
+			<td>{{ wallet.general_ranking }}</td>  <!-- Adjust according to actual attribute name for general ranking -->
+			{% endif %}
+		</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+	{% else %}
+	<p>No rankings to display. Please select a feature and submit to see rankings.</p>
+	{% endif %}
+
+
+
+</div>
+{% endblock %}

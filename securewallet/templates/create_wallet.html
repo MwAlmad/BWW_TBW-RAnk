@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<form method="GET">
+{{ form.hidden_tag() }}
+
+	<div class="form-group col-md-3 mx-auto">
+		<div class="card-body">
+			<h4 class="card-title">Wallet Generator</h4>
+			<p class="card-text">Click on the button below to generate your blockchain wallet</p>
+			{{ form.submit(class="btn1 btn-md btn-block") }}
+		</div>
+	</div>
+	<br>
+
+	<div class="form-group col-md-3 mx-auto">
+
+		{{ form.account_address.label }} {{ form.account_address( class="form-control") }}
+	</div>
+	<br>
+
+	<div class="form-group col-md-3 mx-auto">
+
+		{{ form.publickey.label }} {{ form.publickey( class="form-control") }}
+
+	</div>
+	<br>
+	<div class="form-group col-md-3 mx-auto">
+
+		{{ form.privatekey.label }} {{ form.privatekey( class="form-control") }}
+
+	</div>
+
+
+	<div class="form-group col-md-1 mx-auto">
+
+		{{ form.balance.label }} {{ form.balance( class="form-control") }}
+
+	</div>
+
+	</div>
+</form>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+ <div class="container-fluid">
+	<nav class=" navbar-inverse bg-dark">
+		<ul class='nav'>
+			<li class="nav-item">
+				<a class=" nav-link navbar-brand"  href="{{url_for('bc_implementation.main_blockchain')}}">Main Blockchain</a></li>
+
+			<li class="nav-item"><a class="nav-link"  href="{{url_for('bc_implementation.add_nodes')}}">Add Nodes</a></li>
+			<li class="nav-item"><a class="nav-link"  href="{{url_for('bc_implementation.mine_transactions')}}">Mine Transactions</a></li>
+
+		</ul>
+	</nav>
+ </div>
+{% endblock %}
+

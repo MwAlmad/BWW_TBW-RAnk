@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+
+	<div class="container">
+	<section class="Form my-4 mx-5">
+		<div class="row no-gutters form-control">
+			<div class="col-lg-5">
+				<div class="img-fluid text-center md-3">
+					<img src="/static/wallbc.jpg" alt="" width="216" height="206">
+				</div>
+			</div>
+			<div class="row-cols-md-3 text-center">
+				<br>
+				<br>
+				<h4> Sign in to your wallet account </h4>
+				<br>
+				<form method="POST">
+					{# This hidden_tag is a CSRF security feature. #}
+					{{ form.hidden_tag() }}
+					<div class="form-group text-center md-3 mx-auto"><br>
+						{{ form.email.label (class="form-control-label") }}
+					{% if form.email.errors %}
+						{{ form.email(placeholder='Email', class="form-control is-invalid") }}
+						<div class="invalid-feedback">
+							{% for error in form.email.errors %}
+							<span>{{ error }}</span>
+							{% endfor %}
+						</div>
+						{% else %}
+						{{ form.email(placeholder='Email', class="form-control") }}<br>
+						{% endif %}
+					</div>
+
+					<div class="form-group  text-center md-3 mx-auto"><br>
+						{{ form.password.label (class="form-control-label") }}
+					{% if form.password.errors %}
+						{{ form.password(placeholder='Password', class="form-control is-invalid") }}
+						<div class="invalid-feedback">
+							{% for error in form.password.errors %}
+							<span>{{ error }}</span>
+							{% endfor %}
+						</div>
+						{% else %}
+						{{ form.password(placeholder='Password', class="form-control") }}<br>
+						{% endif %}
+					</div>
+					<div class="form-group  text-center md-3 mx-auto"><br>
+						{{ form.submit(class="btn1 my-3") }}
+					</div>
+				</form>
+			</div>
+		</div>
+	</section>
+	</div>
+{% endblock %}

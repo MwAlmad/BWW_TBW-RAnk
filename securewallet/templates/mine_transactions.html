@@ -1,0 +1,51 @@
+
+{% extends 'base.html' %}
+{% block content %}
+ <div class="container-fluid">
+	<nav class=" navbar-inverse bg-dark">
+		<ul class='nav'>
+			<li class="nav-item">
+				<a class=" nav-link navbar-brand"  href="{{url_for('bc_implementation.main_blockchain')}}">Main Blockchain</a></li>
+
+			<li class="nav-item"><a class="nav-link"  href="{{url_for('bc_implementation.add_nodes')}}">Add Nodes</a></li>
+			<li class="nav-item"><a class="nav-link"  href="{{url_for('bc_implementation.mine_transactions')}}">Mine Transactions</a></li>
+
+		</ul>
+	</nav>
+ </div>
+
+<div class="container-fluid">
+	<h1> Mine Transactions </h1>
+	<form method="POST">
+		{# This hidden_tag is a CSRF security feature. #}
+		{{ form.hidden_tag() }}
+		<table class="table table-sm table-hover">
+			<thead class="thead-light">
+			<tr>
+				<th scope="col">Block Index</th>
+				<th scope="col">Date</th>
+				<th scope="col">Transactions</th>
+				<th scope="col">Nonce</th>
+				<th scope="col">Previous Hash</th>
+			</tr>
+			</thead>
+			<tbody>
+			{% for subfield in form.blockform %}
+			<tr>
+				<td> {{ form.block.block_index.label (class="form-control-label") }}</td>
+				<td> {{ form.block.date.strife('%-I:%M').label (class="form-control-label")  }}</td>
+				<td> {{ form.block.transactions.label (class="form-control-label")  }}</td>
+				<td> {{ form.block.nonce.label (class="form-control-label")  }}</td>
+				<td> {{ form.block.previous_hash.label (class="form-control-label") }} </td>
+			</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+
+		<div class="form-group col-md-3 my-4">
+			{{ form.submit(class="btn1 btn-md btn-block") }}
+		</div>
+	</form>
+</div>
+
+{% endblock %}

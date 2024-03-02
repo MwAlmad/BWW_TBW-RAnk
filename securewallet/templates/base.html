@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Bootstrap CSS -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+	<!-- <script type="text/javascript" src="https://unpkg.com/webcam-easy/dist/webcam-easy.min.js"></script> -->
+	<script src="../static/face-api.min.js"></script>
+	<title>base</title>
+
+  </head>
+
+  <body>
+<div class="container-fluid">
+	<nav class=" navbar-inverse navbar-dark bg-dark ">
+		<li class="nav-item">
+			<a class=" nav-link navbar-brand"  href="{{url_for('core.index')}}">Secure Wallet</a></li>
+		<ul class='nav nav-tabs nav-justified p-4 bg-light '>
+
+			{% if current_user.is_authenticated %}
+			<li class="nav-item "><a class="nav-link text-dark"  href="{{ url_for('users.useraccount') }}"> <h6>Wallet Information</h6> </a></li>
+			<li class="nav-item"><a class="nav-link text-dark"  href="{{ url_for('users.generate_transaction') }}"> <h6> Generate Transactions </h6> </a></li>
+			<li class="nav-item"><a class="nav-link text-dark"  href="{{ url_for('users.secsetting') }}"> <h6> Security Setting </h6> </a></li>
+			<li class="nav-item"><a class="nav-link text-dark"  href="{{ url_for('users.get_user_transactions') }}"> <h6> Confirmed transactions </h6> </a></li>
+			<li class="nav-item"><a class="nav-link text-dark"  href="{{ url_for('users.logout') }}"> <h6> Log Out </h6> </a></li>
+
+			{% else %}
+			<li class="nav-item "><a class="nav-link text-dark"  href="{{url_for('bc_implementation.main_blockchain')}}"> <h6> Main Blockchain</h6> </a></li>
+			<li class="nav-item"><a class="nav-link text-dark"  href="{{url_for('core.ranking')}}"> <h6> Ranking </h6> </a></li>
+			<li class="nav-item"><a class="nav-link text-dark"  href="{{ url_for('users.login') }}"> <h6> Log In  </h6> </a></li>
+			<li class="nav-item"><a class="nav-link text-dark"  href="{{ url_for('users.signup') }}"><h6> Register </h6> </a></li>
+			{% endif %}
+		</ul>
+	</nav>
+</div>
+{% with messages = get_flashed_messages(with_categories=true) %}
+	{% if messages %}
+		{% for category, message in messages %} {% if category =='error' %}
+	<div class="alert alert-danger alter-dismissable fade show" role="alert">
+	{{ message }}
+	<button type="button" class="close" data-dismiss="alert">
+		<span aria-hidden="true">&times;</span>
+	</button>
+    </div>
+    {% else %}
+    <div class="alert alert-success alter-dismissable fade show" role="alert">
+	{{ message }}
+	<button type="button" class="close" data-dismiss="alert">
+		<span aria-hidden="true">&times;</span>
+	</button>
+    </div>
+    {% endif %} {% endfor %} {% endif %} {% endwith %}
+
+
+<div class="container">
+
+	{% block content %}
+	{% endblock %}
+
+</div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  </body>
+
+</html>

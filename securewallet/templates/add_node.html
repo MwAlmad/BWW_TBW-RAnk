@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<form method="POST" class=" text-center ">
+	{# This hidden_tag is a CSRF security feature. #} {{ form.hidden_tag() }}
+	<br>
+	<br>
+	<br>
+
+	<div class="card-body">
+		<h4 class="card-title">Add Blockchain nodes</h4>
+		<p class="card-text">Enter a list of Blockchain node URLs separated by comma and click on "Add" button to add them to the list of nodes</p>
+	</div>
+
+	<div class="form-group col-md-3 my-4">
+		{{ form.nodes_url.label (class="form-control-label") }}
+		{% if form.nodes_url.errors %}
+		{{ form.nodes_url(placeholder='Node URLs', class="form-control is-invalid") }}
+		<div class="invalid-feedback">
+			{% for error in form.nodes_url.errors %}
+			<span>{{ error }}</span>
+			{% endfor %}
+		</div>
+		{% else %}
+		{{ form.nodes_url(placeholder='Node URLs', class="form-control") }}
+		{% endif %}
+	</div>
+
+	<div class="form-group col-md-3 my-4">
+		{{ form.submit(class="btn1 btn-md btn-block") }}
+	</div>
+
+
+</form>>
+
+
+{% endblock %}

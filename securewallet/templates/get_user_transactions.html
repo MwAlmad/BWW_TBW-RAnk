@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+	<h4 class="card-title text-center pt-5 ">Confirmed Transactions</h4>
+
+	<br>
+	<br>
+
+	<table class="table table-striped text-center pt-5">
+		<thead>
+		<tr>
+			<th>Transaction ID</th>
+			<th>Date</th>
+			<th>Sender Address</th>
+			<th>Recipient Address</th>
+			<th>Value</th>
+		</tr>
+		</thead>
+		<tbody>
+
+		{% for trans in user_trans %}
+		<tr>
+			<td>{{trans.transaction_id }}</td>
+			<td>{{ trans.date }}</td>
+			<td>{{ trans.sender_address }}</td>
+			<td>{{ trans.recipient_address}}</td>
+			<td>{{ trans.value}}</td>
+		</tr>
+		{% endfor %}
+
+		</tbody>
+	</table>
+</div>
+{% endblock %}

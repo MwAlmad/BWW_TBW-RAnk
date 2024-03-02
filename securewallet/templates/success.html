@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+	<div class="row justify-content-center">
+		<div class="col-5">
+			<div class="card">
+				<div class="card-header">
+					<h4 class="card-title text-center">The Confirmed Transaction</h4>
+				</div>
+				<div class="card-body">
+					<p class="card-text font-weight-bold">Transaction ID: {{ user_trans.transaction_id }}</p>
+					<hr>
+					<p class="card-text">Date: {{ user_trans.date }}</p>
+					<p class="card-text">Sender Address: {{ user_trans.sender_address }}</p>
+					<p class="card-text">Recipient Address: {{ user_trans.recipient_address}}</p>
+					<p class="card-text">Value: {{ user_trans.value}}</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

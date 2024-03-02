@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+    <section class="Form my-4 mx-5">
+        <div class="row no-gutters form-control">
+            <div class="col-lg-5">
+                <div class="img-fluid text-center md-3">
+                    <img src="/static/wallbc.jpg" alt="" width="216" height="206">
+                </div>
+            </div>
+            <div class="row-cols-md-3 text-center">
+                <br>
+                <br>
+
+                <h4> Additional Verification </h4>
+
+                <br>
+                <form method="POST">
+                    {# This hidden_tag is a CSRF security feature. #}
+                    {{ form.hidden_tag() }}
+
+                    <div class="form-group  text-center md-3 mx-auto"><br>
+                        {{ form.password.label (class="form-control-label") }}
+                        {% if form.password.errors %}
+                        {{ form.password(placeholder='Password', class="form-control is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.password.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <!-- {{ form.password(placeholder='Password', class="form-control") }}<br> -->
+
+                        <video onloadedmetadata="onPlay(this)" id="inputVideo" autoplay muted playsinline style="margin-top: 20px; width: 100%; border: 1px solid black;"></video>
+                        <!-- <canvas id="canvas" width="640" height="480"></canvas> -->
+
+                        <div style="display: flex; flex-direction: row; margin: 20px;">
+                            <label for="face_auth_result">Face Recognition Result:</label>
+                            <label id="face_auth_result" style="font-weight: bold; color: red;">N/A</label>
+                        </div>
+                    
+                    
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group text-center md-3 mx-auto" id="submit_group" style="margin: 20px;">
+                        {{ form.submit(class="btn1 my-3") }}
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+    </section>
+</div>
+
+<script>
+    let baseDescriptor = ''
+    let inputDescriptor = ''
+    let matched = false
+    let model = ''
+
+    async function onPlay() {
+      const videoEl = $('#inputVideo').get(0)
+    //   const canvas = document.getElementById('canvas');
+    //   const context = canvas.getContext('2d');
+
+      setInterval(() => {
+        // context.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
+        // imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+
+        // console.log(imageData)
+
+        this.getDescriptor(videoEl)
+      }, 1000);
+    }
+
+    function getFaceDetectorOptions() {
+        return selectedFaceDetector === SSD_MOBILENETV1
+            ? new faceapi.SsdMobilenetv1Options({ minConfidence })
+            : new faceapi.TinyFaceDetectorOptions({ inputSize, scoreThreshold })
+    }
+
+    async function getDescriptor(input) {
+        // descriptor = await faceapi.computeFaceDescriptor(input)
+        result = await faceapi
+        .detectAllFaces(input, model)
+        .withFaceLandmarks()
+        .withFaceDescriptors()
+
+        if (!matched) {
+            if (result.length) {
+                inputDescriptor = result[0]['descriptor']
+
+                console.log(result[0])
+
+                const distance = faceapi.utils.round(
+                    faceapi.euclideanDistance(baseDescriptor, inputDescriptor)
+                )
+
+                if (distance <= 0.6) {
+                    matched = true
+                    $('#face_auth_result').text("Passed");
+                    $('#face_auth_result').css('color', 'green');
+                    $('#submit').disabled = false;
+                    $('#submit_group').show();
+                } else {
+                    matched = false
+                    $('#face_auth_result').text("Failed");
+                    $('#face_auth_result').css('color', 'red');
+                    $('#submit').disabled = true;
+                    $('#submit_group').hide();
+                }
+
+                console.log(distance, matched)
+            } else {
+                matched = false
+                $('#face_auth_result').text("N/A");
+                $('#face_auth_result').css('color', 'red');
+                $('#submit').disabled = true;
+                $('#submit_group').hide();
+            }
+        }
+    }
+
+    async function run() {
+        await faceapi.loadFaceLandmarkModel('/static/weights')
+        await faceapi.loadFaceRecognitionModel('/static/weights')
+
+        model = await faceapi.nets.ssdMobilenetv1.load('/static/weights')
+
+        // getBaseDescriptor()
+
+        const stream = await navigator.mediaDevices.getUserMedia({ video: {} })
+        const videoEl = $('#inputVideo').get(0)
+        videoEl.srcObject = stream
+    }
+
+    async function getBaseDescriptor() {
+        input = await faceapi.fetchImage('static/photo.jpg')
+        descriptor = await faceapi.computeFaceDescriptor(input)
+
+        descriptorJSON = JSON.stringify(descriptor)
+
+        console.log('*****', new Float32Array(Object.values(JSON.parse(descriptorJSON))))
+
+        baseDescriptor = descriptor
+    }
+
+    $(document).ready(function() {
+        $('#submit').disabled = true;
+        $('#submit_group').hide();
+        run()
+
+        base_desc_str = new URLSearchParams(window.location.search.substr(1)).get("bio_desc");
+        baseDescriptor = Float32Array.from(base_desc_str.split(","), parseFloat)
+        // console.log(baseDescriptor)
+    })	
+
+</script>
+
+{% endblock %}

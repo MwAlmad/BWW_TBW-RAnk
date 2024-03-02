@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container-fluid">
+
+	<form method="POST" class=" text-center ">
+		{{ form.hidden_tag() }}
+		<div class="jumbotron jumbotron-fluid">
+			<br>
+			<br>
+			<div class="form-group">
+				<h3 class="mb-5">Authentication Settings</h3>
+				<h5 class="mb-4">Please choose the authentication method that you prefer</h5>
+				<ul class="list-unstyled">
+					{% for subfield in form.auth_type_radio %}
+					<li class="list-group-item d-flex align-items-start justify-content-between col-md-4 mb-2">
+						<div class="flex-shrink-0">
+							{{ subfield }}
+						</div>
+						<div class="flex-grow-1 text-start ms-3">
+							<label class="form-control-label ms-2">{{ subfield.label }}</label>
+						</div>
+					</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+
+		<div id="otp_container" class="alert alert-danger" role="alert">
+			<p>Please scan the following QR code on your mobile device in Google Authencator or Authy to add OTP verification.</p>
+			<img src="{{ qrcode(form.otp_url.data) }}" style="width: 150px; height :150px; border-radius: 0;">
+		</div>
+
+		<div id="biometric_container" class="alert alert-danger" role="alert">
+			<p>PLEASE CAPTURE YOUR PORTRAIT ENSURING YOUR FACE IS CLEARLY VISIBLE.</p>
+			<p>Note - If you have saved your biometric fingerprint, new attempt will overwrite any existing data.</p>
+			<div style="display: flex; flex-direction: row;">
+				<video id="inputVideo" autoplay muted playsinline style="width: 50%; border: 1px solid black;"></video>
+				<canvas id="canvas" width="640" height="480" style="border: 1px solid black; width: 50%;"></canvas>
+			</div>
+
+			<input type="button" id="capture" value="Capture" style="padding: 10px 40px;color: #000; margin-top: 10px;">
+			<div style="display: flex; flex-direction: row; margin: 20px; width: 400px;">
+				<label for="face_desc_result">Biometric Extraction Result:</label>
+				<label id="face_desc_result" style="font-weight: bold; color: red;">N/A</label>
+			</div>
+		</div>
+
+		<div class="form-group  text-center col-md-3 my-4"><br>
+			{{ form.submit(class="btn1") }}
+		</div>
+	</form>
+
+</div>
+
+<script>
+	var auth_type = document.getElementById('auth_type').getAttribute('value');
+	var auth_type_radio1 = document.getElementById('auth_type_radio-0');
+	var auth_type_radio2 = document.getElementById('auth_type_radio-1');
+	var auth_type_radio3 = document.getElementById('auth_type_radio-2');
+	var auth_type_radio4 = document.getElementById('auth_type_radio-3');
+	var submit = document.getElementById('submit');
+	var otp_container = document.getElementById('otp_container');
+	var biometric_container = document.getElementById('biometric_container');
+	var radios = document.querySelectorAll('input[type=radio][name="auth_type_radio"]');
+	var bio_desc = document.getElementById('bio_desc');
+
+	const canvas = document.getElementById('canvas');
+	const context = canvas.getContext('2d');
+
+	var model = ''
+	var biometric_desc = false
+// I changed all == to === if not work change it back to ==
+	if (auth_type === 0){
+		auth_type_radio1.checked = true;
+	} else if (auth_type === 1){
+		auth_type_radio2.checked = true;
+	} else if (auth_type === 2){
+		auth_type_radio3.checked = true;
+	} else if (auth_type === 3) {
+		auth_type_radio4.checked = true;
+	}
+	if (auth_type_radio2.checked === true){
+		otp_container.style.display = 'block';
+	} else {
+		otp_container.style.display = 'none';
+	}
+
+	if (auth_type_radio3.checked === true){
+		biometric_container.style.display = 'block';
+		if (biometric_desc === true)
+			submit.style.display = 'inline';
+		else
+			submit.style.display = 'none';
+	} else {
+		biometric_container.style.display = 'none';
+	}
+
+	if (auth_type_radio4.checked === true){
+		console.log('123123')
+		// biometric_container.style.display = 'block';
+		// otp_container.style.display = 'block';
+
+		if (biometric_desc === true)
+			submit.style.display = 'inline';
+		else
+			submit.style.display = 'none';
+	} else {
+		biometric_container.style.display = 'none';
+		otp_container.style.display = 'none';
+	}
+
+
+	function radioChangeHandler(e){
+		if (this.value === '1'){
+			otp_container.style.display = 'block';
+		} else {
+			otp_container.style.display = 'none';
+		}
+		if (this.value === '2'){
+			biometric_container.style.display = 'block';
+
+			if (biometric_desc === true)
+				submit.style.display = 'inline';
+			else
+				submit.style.display = 'none';
+		} else {
+			submit.style.display = 'inline';
+			biometric_container.style.display = 'none';
+		}
+
+		if (this.value === '3'){
+			otp_container.style.display = 'block';
+			biometric_container.style.display = 'block';
+
+			if (biometric_desc === true)
+				submit.style.display = 'inline';
+			else
+				submit.style.display = 'none';
+		}
+	}
+
+	Array.prototype.forEach.call(radios, function(radio){
+		radio.addEventListener('change', radioChangeHandler);
+	})
+	$( "#capture" ).click(function() {
+		canvas.getContext("2d").drawImage(inputVideo, 0, 0);
+		detectFace(canvas.toDataURL('image/jpeg', 1.0))
+	});
+	async function detectFace(img) {
+		let input = await faceapi.fetchImage(img)
+		result = await faceapi
+				.detectAllFaces(input, model)
+				.withFaceLandmarks()
+				.withFaceDescriptors()
+
+		if (result.length) {
+			inputDescriptor = result[0]['descriptor']
+			// console.log(result[0])
+			// console.log(inputDescriptor)
+
+			biometric_desc = true
+			$('#face_desc_result').text("Passed");
+			submit.style.display = 'inline';
+			bio_desc.value = inputDescriptor
+		} else {
+			console.log("no face deteced!")
+			biometric_desc = false
+			$('#face_desc_result').text("Failed");
+
+			submit.style.display = 'none';
+		}
+	}
+
+	async function getBaseDescriptor(img) {
+		input = await faceapi.fetchImage(img)
+		descriptor = await faceapi.computeFaceDescriptor(input)
+
+		descriptorJSON = JSON.stringify(descriptor)
+
+		console.log('*****', new Float32Array(Object.values(JSON.parse(descriptorJSON))))
+
+		baseDescriptor = descriptor
+	}
+
+	async function run() {
+		await faceapi.loadFaceLandmarkModel('/static/weights')
+		await faceapi.loadFaceRecognitionModel('/static/weights')
+		model = await faceapi.nets.ssdMobilenetv1.load('/static/weights')
+		const stream = await navigator.mediaDevices.getUserMedia({ video: {} })
+		const videoEl = $('#inputVideo').get(0)
+		videoEl.srcObject = stream
+	}
+
+	$(document).ready(function() {
+// $('#submit').disabled = true;
+// $('#submit_group').hide();
+run()
+})
+</script>
+
+{% endblock %}
